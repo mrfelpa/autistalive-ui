@@ -27,6 +27,23 @@ const {
     onSuccess: () => router.push("/dashboard"),
   }
 );
+
+// Função debounce para lidar com a entrada do usuário
+const debouncedUpdateEmail = debounce((value) => {
+  data.email = value;
+}, 300); 
+
+const debouncedUpdatePassword = debounce((value) => {
+  data.password = value;
+}, 300);
+
+watch(() => data.email, (newValue) => {
+  debouncedUpdateEmail(newValue);
+});
+
+watch(() => data.password, (newValue) => {
+  debouncedUpdatePassword(newValue);
+});
 </script>
 
 <template>
@@ -49,6 +66,7 @@ const {
           type="email"
           class="block w-full mt-1"
           v-model="data.email"
+          @input="debouncedUpdateEmail($event.target.value)"
           :errors="errors.email?.[0]"
           required
           autoFocus
@@ -63,6 +81,7 @@ const {
           type="password"
           class="block w-full mt-1"
           v-model="data.password"
+          @input="debouncedUpdatePassword($event.target.value)"
           :errors="errors.password"
           required
           autoComplete="current-password"
